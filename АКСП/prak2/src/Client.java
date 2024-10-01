@@ -5,9 +5,9 @@ public class Client {
         try {
             IQuadraticSolver solver = (IQuadraticSolver) Naming.lookup("rmi://localhost/QuadraticSolver");
 
-            double a = 1;
-            double b = -3;
-            double c = 2;
+            double a = 2;
+            double b = -9;
+            double c = 4;
 
             Roots roots = solver.solve(a, b, c);
 
@@ -20,7 +20,7 @@ public class Client {
             }
 
         } catch (Exception e) {
-            System.err.println("Ошибка на клиенте: " + e);
+            System.err.println("Ошибка: " + e);
             e.printStackTrace();
         }
     }
