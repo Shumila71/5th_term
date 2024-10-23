@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: Online Game Store API
+  description: API для управления интернет-магазином игр by Shumakher M.E. IKBO-20-22
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /games:
+    get:
+      summary: Получить список всех игр
+      responses:
+        '200':
+          description: Список игр успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+    post:
+      summary: Добавить новую игру
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '201':
+          description: Игра успешно добавлена
+
+  /games/{id}:
+    get:
+      summary: Получить игру по ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID игры
+      responses:
+        '200':
+          description: Информация об игре успешно получена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Игра не найдена
+
+    put:
+      summary: Обновить информацию об игре по ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID игры
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '200':
+          description: Игра успешно обновлена
+
+    delete:
+      summary: Удалить игру по ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID игры
+      responses:
+        '204':
+          description: Игра успешно удалена
+
+components:
+  schemas:
+    Game:
+      type: object
+      required:
+        - title
+        - genre
+        - price
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Cyberpunk 2077"
+        genre:
+          type: string
+          example: "RPG"
+        price:
+          type: number
+          format: float
+          example: 59.99

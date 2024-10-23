@@ -12,7 +12,6 @@ public class ClientSender extends Thread {
 
     @Override
     public void run() {
-
         try {
             System.out.println("Седнер запущен");
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);

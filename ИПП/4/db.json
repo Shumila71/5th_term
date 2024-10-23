@@ -1,0 +1,49 @@
+{
+  "authors": [
+    {
+      "name": "Shumakher Mark",
+      "birth_year": 2004,
+      "nationality": "Russian",
+      "id": "df84"
+    },
+    {
+      "name": "Leo Tolstoy",
+      "birth_year": 1828,
+      "nationality": "Russian",
+      "id": "6956"
+    },
+    {
+      "id": "e027",
+      "name": "Anton Chekhov",
+      "birth_year": 1860,
+      "nationality": "Russian"
+    }
+  ],
+  "books": [
+    {
+      "title": "Crime and Punishment",
+      "author": "Fyodor Dostoevsky",
+      "year_published": 1866,
+      "genre": "Psychological Fiction",
+      "pages": 431,
+      "id": "2977"
+    },
+    {
+      "title": "War and Peace",
+      "author": "Leo Tolstoy",
+      "year_published": 1869,
+      "genre": "Historical Fiction",
+      "pages": 1225,
+      "id": "dc29"
+    }
+  ],
+  "libraries": [
+    {
+      "name": "Library of Congress",
+      "location": "Washington, D.C., USA",
+      "established": 1800,
+      "books_available": 17000000,
+      "id": "b3ab"
+    }
+  ]
+}
