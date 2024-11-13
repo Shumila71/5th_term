@@ -142,6 +142,110 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Contract` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+-- Устанавливаем DELIMITER для объявления триггеров
+DELIMITER //
+
+-- Первый триггер: 
+CREATE TRIGGER update_agent_and_payment
+AFTER INSERT ON `mydb`.`Contract`
+FOR EACH ROW
+BEGIN
+    DECLARE deal_status VARCHAR(15);
+
+    SELECT `status` INTO deal_status
+    FROM `mydb`.`Deal`
+    WHERE `deal_id` = NEW.Deal_deal_id;
+
+    IF deal_status = 'Completed' THEN
+        UPDATE `mydb`.`Agent`
+        SET `walrus` = `walrus` + 100
+        WHERE `agent_id` = NEW.Agent_agent_id;
+
+        UPDATE `mydb`.`Payment` AS p
+        INNER JOIN `mydb`.`Deal` AS d ON p.Deal_deal_id = d.deal_id
+        INNER JOIN `mydb`.`Contract` AS c ON d.deal_id = c.Deal_deal_id
+        SET p.total_cost = p.total_cost + 100
+        WHERE c.Agent_agent_id = NEW.Agent_agent_id
+          AND d.status = 'Pending'
+          AND p.status <> 'Paid';
+
+        UPDATE `mydb`.`Agent`
+        SET `num_of_succs_deals` = `num_of_succs_deals` + 1
+        WHERE `agent_id` = NEW.Agent_agent_id;
+    END IF;
+END //
+
+--  2ый триггер:
+CREATE TRIGGER update_deal_and_run_actions
+AFTER UPDATE ON `mydb`.`Payment`
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Paid' AND OLD.status <> 'Paid' THEN
+            UPDATE `mydb`.`Deal`
+            SET `status` = 'Completed'
+            WHERE `deal_id` = NEW.Deal_deal_id;
+
+            UPDATE `mydb`.`Agent`
+            SET `walrus` = `walrus` + 100
+            WHERE `agent_id` = (SELECT `Agent_agent_id` FROM `mydb`.`Contract` WHERE `Deal_deal_id` = NEW.Deal_deal_id);
+
+            UPDATE `mydb`.`Agent`
+            SET `num_of_succs_deals` = `num_of_succs_deals` + 1
+            WHERE `agent_id` = (SELECT `Agent_agent_id` FROM `mydb`.`Contract` WHERE `Deal_deal_id` = NEW.Deal_deal_id);
+    END IF;
+END //
+
+
+--  3ий триггер: 
+CREATE TRIGGER decrement_successful_deals_and_walrus_on_contract_delete
+AFTER DELETE ON `mydb`.`Contract`
+FOR EACH ROW
+BEGIN
+    DECLARE deal_status VARCHAR(15);
+    SELECT `status` INTO deal_status
+    FROM `mydb`.`Deal`
+    WHERE `deal_id` = OLD.Deal_deal_id;
+    IF deal_status = 'Completed' THEN
+        UPDATE `mydb`.`Agent`
+        SET `num_of_succs_deals` = `num_of_succs_deals` - 1,
+            `walrus` = `walrus` - 100
+        WHERE `agent_id` = OLD.Agent_agent_id;
+    END IF;
+END //
+
+--  4ый триггер
+CREATE TRIGGER update_payment_total_cost_on_object_price_change
+AFTER UPDATE ON `mydb`.`Object`
+FOR EACH ROW
+BEGIN
+    DECLARE price_difference INT;
+
+    IF OLD.cost <> NEW.cost THEN
+        SET price_difference = NEW.cost - OLD.cost;
+
+        UPDATE `mydb`.`Payment` AS p
+        INNER JOIN `mydb`.`Deal` AS d ON p.Deal_deal_id = d.deal_id
+        SET p.total_cost = p.total_cost + price_difference
+        WHERE d.Object_object_id = NEW.object_id
+          AND p.status <> 'Paid'; 
+    END IF;
+END //
+
+--  5ый триггер:
+CREATE TRIGGER update_deal_status_on_payment_expected
+AFTER UPDATE ON `mydb`.`Payment`
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Expected' AND OLD.status <> 'Expected' THEN
+        UPDATE `mydb`.`Deal`
+        SET `status` = 'Pending'
+        WHERE `deal_id` = NEW.Deal_deal_id;
+    END IF;
+END //
+
+-- Возвращаем DELIMITER к стандартному значению
+DELIMITER ;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
