@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gRPC Client Test</title>
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <h1>gRPC Client Test by Mark Shumkaher</h1>
+    <h2>Register</h2>
+    <input id="register-id" placeholder="ID" />
+    <input id="register-username" placeholder="Имя" />
+    <input id="register-password" placeholder="Пароль" type="password" />
+    <button onclick="register()">Register</button>
+
+    <h2>Login</h2>
+    <input id="login-username" placeholder="Имя" />
+    <input id="login-password" placeholder="Пароль" type="password" />
+    <button onclick="login()">Login</button>
+
+    <h2>Update</h2>
+    <input id="update-id" placeholder="ID" />
+    <input id="update-username" placeholder="Новое имя" />
+    <input id="update-password" placeholder="Новый пароль" type="password" />
+    <button onclick="update()">Update</button>
+
+    <pre id="output"></pre>
+  </body>
+</html>
