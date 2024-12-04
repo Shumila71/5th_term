@@ -31,7 +31,7 @@ public class DataConfig {
                 Event l = new Event("Фестиваль моды", 200);
                 Event m = new Event("Музыкальный фестиваль", 600);
                 Event n = new Event("Балетный спектакль", 180);
-                Event o = new Event("Книжная ярмарка", 500);
+                Event o = new Event("Книжная ярмарка", 1);
 
                 // Сохраняем события в базу данных
                 eventRepository.saveAll(List.of(

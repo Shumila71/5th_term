@@ -55,7 +55,7 @@ public class BookingController {
         try {
             List<Users> tickets = bookingService.findTicketsByEmail(email);
             if (tickets.isEmpty()) {
-                redirectAttributes.addFlashAttribute("errorMessage_search", "No tickets found for email: " + email);
+                redirectAttributes.addFlashAttribute("errorMessage_search", "Не найденно билетов, забронированных на почту: " + email);
             } else {
                 redirectAttributes.addFlashAttribute("tickets", tickets);
             }
